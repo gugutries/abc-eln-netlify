@@ -1,1 +1,9 @@
+title: ABC Lab ELN
+author: ABC Lab, UMD
+logo: https://upload.wikimedia.org/wikipedia/commons/8/88/University_of_Maryland_seal.svg
+parse:
+  myst_enable_extensions:
+    - colon_fence
+    - raw_html
+    - html_image
 
