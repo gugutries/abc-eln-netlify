@@ -5,4 +5,7 @@ parse:
   myst_enable_extensions:
     - colon_fence
     - html_image
+sphinx:
+  config:
+    source_suffix: [".md"]
 
