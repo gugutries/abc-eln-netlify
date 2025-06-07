@@ -4,6 +4,5 @@ logo: https://upload.wikimedia.org/wikipedia/commons/8/88/University_of_Maryland
 parse:
   myst_enable_extensions:
     - colon_fence
-    - raw_html
     - html_image
 
