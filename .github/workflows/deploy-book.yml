@@ -26,7 +26,7 @@ jobs:
         run: |
           mkdir -p _build/html
           echo '/*' > _build/html/_headers
-          echo "  Basic-Auth: ${{ secrets.NETLIFY_USER }} ${{ secrets.NETLIFY_PASS }}" >> _build/html/_headers
+          echo "  Basic-Auth: ${{ secrets.NETLIFY_AUTH_USER }} ${{ secrets.NETLIFY_AUTH_PASS }}" >> _build/html/_headers
           echo '  Status: 401' >> _build/html/_headers
 
       # 🏗️ Build Jupyter Book
