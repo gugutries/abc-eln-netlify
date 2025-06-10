@@ -13,21 +13,14 @@ jobs:
         with:
           python-version: 3.11
       - run: pip install -r requirements.txt
-
-      # 🛠️ Convert .md to .ipynb
       - run: |
           mkdir -p converted
           for f in notebooks/*.md; do
             jupytext --to ipynb "$f" -o "converted/$(basename "$f" .md).ipynb"
           done
-
-      # 🔐 Generate _headers with Basic Auth
-      - name: Create Netlify _headers file
-        run: |
-          mkdir -p _build/html
-          echo '/*' > _build/html/_headers
-          echo "  Basic-Auth: ${{ secrets.NETLIFY_AUTH_USER }} ${{ secrets.NETLIFY_AUTH_PASS }}" >> _build/html/_headers
-          echo '  Status: 401' >> _build/html/_headers
-
-      # 🏗️ Build Jupyter Book
       - run: jupyter-book build .
+
+      - name: Inject login credentials
+        run: |
+          sed -i 's/%%USERNAME%%/${{ secrets.ELN_USER }}/g' _build/html/_static/login.js
+          sed -i 's/%%PASSWORD%%/${{ secrets.ELN_PASS }}/g' _build/html/_static/login.js
