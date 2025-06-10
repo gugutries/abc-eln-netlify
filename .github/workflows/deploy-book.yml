@@ -8,24 +8,44 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
           python-version: 3.11
-      - run: pip install -r requirements.txt
-      - run: |
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+
+      - name: Convert Markdown logs to Notebooks
+        run: |
           mkdir -p converted
           for f in notebooks/*.md; do
             jupytext --to ipynb "$f" -o "converted/$(basename "$f" .md).ipynb"
           done
-      - run: jupyter-book build .
-      - name: Generate Netlify _headers with Basic Auth
-        run: |
-          echo "/*" > _build/html/_headers
-          echo "  Basic-Auth: ${{ secrets.NETLIFY_AUTH_USER }} ${{ secrets.NETLIFY_AUTH_PASS }}" >> _build/html/_headers
-          echo "  Status: 401" >> _build/html/_headers
-      - uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: _build/html
 
+      - name: Build Jupyter Book
+        run: jupyter-book build .
+
+      - name: Generate netlify.toml with Basic Auth
+        run: |
+          cat <<EOF > netlify.toml
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Basic-Auth = "${{ secrets.NETLIFY_AUTH_USER }} ${{ secrets.NETLIFY_AUTH_PASS }}"
+    Status = "401"
+EOF
+
+      - name: Move netlify.toml to build folder
+        run: mv netlify.toml _build/html/
+
+      - name: Deploy to Netlify
+        uses: jsmrcaga/action-netlify-deploy@v2.2.0
+        with:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          build_directory: _build/html
+          NETLIFY_DEPLOY_TO_PROD: true
