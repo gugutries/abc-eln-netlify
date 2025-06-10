@@ -19,6 +19,11 @@ jobs:
             jupytext --to ipynb "$f" -o "converted/$(basename "$f" .md).ipynb"
           done
       - run: jupyter-book build .
+      - name: Generate Netlify _headers with Basic Auth
+        run: |
+          echo "/*" > _build/html/_headers
+          echo "  Basic-Auth: ${{ secrets.NETLIFY_AUTH_USER }} ${{ secrets.NETLIFY_AUTH_PASS }}" >> _build/html/_headers
+          echo "  Status: 401" >> _build/html/_header
       - uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
