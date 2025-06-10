@@ -8,11 +8,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - uses: actions/setup-python@v4
         with:
           python-version: 3.11
 
@@ -29,15 +27,10 @@ jobs:
       - name: Build Jupyter Book
         run: jupyter-book build .
 
-      - name: Generate netlify.toml with Basic Auth
+      - name: Inject secure _headers
         run: |
-          cat <<EOF > netlify.toml
-          [[headers]]
-          for = "/*"
-          [headers.values]
-          Basic-Auth = "${{ secrets.NETLIFY_AUTH_USER }} ${{ secrets.NETLIFY_AUTH_PASS }}"
-          Status = "401"
+          cat <<EOF > _build/html/_headers
+          /*
+          Basic-Auth: ${{ secrets.NETLIFY_AUTH_USER }} ${{ secrets.NETLIFY_AUTH_PASS }}
+          Status: 401
           EOF
-
-      - name: Move netlify.toml to build folder
-        run: mv netlify.toml _build/html/
