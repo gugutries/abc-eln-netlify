@@ -8,4 +8,8 @@ parse:
 sphinx:
   config:
     source_suffix: [".md"]
+html:
+  extra_static_paths: ["_static"]
+  extra_js:
+    - login.js
 
