@@ -13,11 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Generate _headers with Basic Auth for logform
-        run: |
-          echo "/*" > logform/_headers
-          echo "  Basic-Auth: ${{ secrets.NETLIFY_AUTH_USER }} ${{ secrets.NETLIFY_AUTH_PASS }}" >> logform/_headers
-          echo "  Status: 401" >> logform/_headers
-
+        
       - uses: jsmrcaga/action-netlify-deploy@v2.2.0
         with:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
