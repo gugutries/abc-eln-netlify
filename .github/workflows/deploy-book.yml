@@ -32,12 +32,12 @@ jobs:
       - name: Generate netlify.toml with Basic Auth
         run: |
           cat <<EOF > netlify.toml
-[[headers]]
-  for = "/*"
-  [headers.values]
-    Basic-Auth = "${{ secrets.NETLIFY_AUTH_USER }} ${{ secrets.NETLIFY_AUTH_PASS }}"
-    Status = "401"
-EOF
+          [[headers]]
+          for = "/*"
+          [headers.values]
+          Basic-Auth = "${{ secrets.NETLIFY_AUTH_USER }} ${{ secrets.NETLIFY_AUTH_PASS }}"
+          Status = "401"
+          EOF
 
       - name: Move netlify.toml to build folder
         run: mv netlify.toml _build/html/
