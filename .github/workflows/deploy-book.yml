@@ -20,13 +20,6 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Convert .md logs → .ipynb
-        run: |
-          mkdir -p converted
-          for f in notebooks/*.md; do
-            jupytext --to ipynb "$f" -o "converted/$(basename "$f" .md).ipynb"
-          done
-
       - name: Build Jupyter Book
         run: jupyter-book build .
 
