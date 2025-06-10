@@ -1,4 +1,4 @@
-name: 📘 Build & Deploy ELN (with Basic Auth)
+name: 📘 Build & Deploy ELN
 
 on:
   push:
@@ -7,28 +7,27 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
         with:
           python-version: 3.11
+      - run: pip install -r requirements.txt
 
-      - name: Install dependencies
-        run: pip install -r requirements.txt
+      # 🛠️ Convert .md to .ipynb
+      - run: |
+          mkdir -p converted
+          for f in notebooks/*.md; do
+            jupytext --to ipynb "$f" -o "converted/$(basename "$f" .md).ipynb"
+          done
 
-      - name: Build Jupyter Book
-        run: jupyter-book build .
-
-      - name: Generate netlify.toml with Basic Auth
+      # 🔐 Generate _headers with Basic Auth
+      - name: Create Netlify _headers file
         run: |
-          cat <<EOF > netlify.toml
-          [[headers]]
-          for = "/*"
-            [headers.values]
-            Basic-Auth = "${{ secrets.NETLIFY_AUTH_USER }} ${{ secrets.NETLIFY_AUTH_PASS }}"
-            Status = "401"
-          EOF
+          mkdir -p _build/html
+          echo '/*' > _build/html/_headers
+          echo "  Basic-Auth: ${{ secrets.NETLIFY_USER }} ${{ secrets.NETLIFY_PASS }}" >> _build/html/_headers
+          echo '  Status: 401' >> _build/html/_headers
+
+      # 🏗️ Build Jupyter Book
+      - run: jupyter-book build .
