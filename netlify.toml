@@ -7,3 +7,10 @@
   to = "/.netlify/functions/:splat"
   status = 200
 
+[[edge_functions]]
+path = "/js/env.js"
+function = "env"
+
+[functions.env]
+included_files = ["netlify/functions/env.js"]
+
