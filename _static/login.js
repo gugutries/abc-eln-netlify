@@ -1,49 +1,34 @@
 (function () {
-  const expectedUser = "abclab";
-  const expectedPass = "password";
-  const STORAGE_KEY = "eln_logged_in";
+  const correctUsername = "abclab";
+  const correctPassword = "password";
 
-  // Already logged in this session
-  if (localStorage.getItem(STORAGE_KEY) === "true") return;
-
-  const user = prompt("Username:");
-  if (!user || user !== expectedUser) return denyAccess();
-
-  const pass = prompt("Password:");
-  if (!pass || pass !== expectedPass) return denyAccess();
-
-  // ✅ Passed both checks — remember session
-  localStorage.setItem(STORAGE_KEY, "true");
-
-  function denyAccess() {
-    // Clear page and stop interaction completely
-    document.querySelector("html").innerHTML = `
-      <head>
-        <title>Access Denied</title>
-        <style>
-          body {
-            font-family: sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            background: #f5f5f5;
-            color: #333;
-            margin: 0;
-          }
-          h1 { color: #c00; }
-          a { color: #0077cc; }
-        </style>
-      </head>
-      <body>
-        <h1>🔒 Access Denied</h1>
+  const showAccessDenied = () => {
+    document.documentElement.innerHTML = `
+      <div style="display:flex;flex-direction:column;justify-content:center;align-items:center;height:100vh;background-color:#f9f9f9;text-align:center;font-family:sans-serif;">
+        <h1 style="color:#cc0000;">🔒 Access Denied</h1>
         <p>Please contact the <strong>ABC Lab Manager</strong> to request access.</p>
-        <p>Email: <a href="mailto:labmanager@abclab.umd.edu">labmanager@abclab.umd.edu</a></p>
-      </body>
+        <p>Email: <a href="mailto:labmanager@abcels.umd.edu">labmanager@abcels.umd.edu</a></p>
+      </div>
     `;
+  };
 
-    // Prevent anything else from running
-    throw new Error("Access denied – blocked by login.js");
-  }
+  const authenticate = () => {
+    const username = prompt("Enter username:");
+    const password = prompt("Enter password:");
+
+    if (!username || !password || username !== correctUsername || password !== correctPassword) {
+      showAccessDenied();
+      return false;
+    }
+
+    return true;
+  };
+
+  // Block rendering until authenticated
+  window.addEventListener("DOMContentLoaded", () => {
+    if (!authenticate()) {
+      // stop further interaction (in case anything slipped through)
+      window.stop();
+    }
+  });
 })();
