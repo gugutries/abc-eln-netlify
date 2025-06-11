@@ -1,31 +1,16 @@
-// logform/js/auth.js
+import { Auth0Client } from "https://cdn.auth0.com/js/auth0-spa-js/2.0/auth0-spa-js.production.js";
 
-const clientId = '%%AUTH0_CLIENT_ID%%';
-const domain = '%%AUTH0_DOMAIN%%';
+const auth0 = new Auth0Client({
+  domain: window.env.AUTH0_DOMAIN,
+  clientId: window.env.AUTH0_CLIENT_ID,
+  authorizationParams: {
+    redirect_uri: window.location.origin,
+  },
+});
 
-window.onload = async () => {
-  const isLoggedIn = localStorage.getItem("isLoggedIn");
-
-  if (!isLoggedIn) {
-    const auth0 = await createAuth0Client({
-      domain,
-      client_id: clientId,
-      authorizationParams: {
-        redirect_uri: window.location.origin
-      }
-    });
-
-    const query = window.location.search;
-    if (query.includes("code=") && query.includes("state=")) {
-      await auth0.handleRedirectCallback();
-      window.history.replaceState({}, document.title, "/");
-    }
-
-    const user = await auth0.getUser();
-    if (!user) {
-      auth0.loginWithRedirect();
-    } else {
-      localStorage.setItem("isLoggedIn", true);
-    }
+// Example usage
+auth0.isAuthenticated().then((loggedIn) => {
+  if (!loggedIn) {
+    auth0.loginWithRedirect();
   }
-};
+});
