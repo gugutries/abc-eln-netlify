@@ -12,7 +12,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      # Deploy to Netlify
+
+      - name: Skip build – this is a static site
+        run: echo "No build step required"
+
       - uses: jsmrcaga/action-netlify-deploy@v2.2.0
         with:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
@@ -21,3 +24,5 @@ jobs:
           NETLIFY_DEPLOY_MESSAGE: "Auto-deploy secure logform"
           build_directory: logform
           functions_directory: netlify/functions
+          install_command: echo "Skipping install"
+          build_command: echo "Skipping build"
