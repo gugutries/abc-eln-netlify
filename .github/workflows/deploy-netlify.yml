@@ -13,7 +13,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Generate _headers with Basic Auth for logform
-        
+      
+      - name: Inject Auth0 credentials into logform auth.js
+        run: |
+          sed -i 's/%%AUTH0_CLIENT_ID%%/${{ secrets.AUTH0_CLIENT_ID }}/g' logform/js/auth.js
+          sed -i 's/%%AUTH0_DOMAIN%%/${{ secrets.AUTH0_DOMAIN }}/g' logform/js/auth.js
+
       - uses: jsmrcaga/action-netlify-deploy@v2.2.0
         with:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
