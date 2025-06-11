@@ -12,6 +12,7 @@ html:
   extra_static_paths: ["_static"]
   extra_js:
     - login.js
+    - _static/js/auth.js
   extra_footer: ""
   extra_head: |
     <script src="https://cdn.auth0.com/js/auth0-spa-js/2.0/auth0-spa-js.production.js"></script>
