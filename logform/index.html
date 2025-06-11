@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html>
-<head><title>ABC Lab Log Entry</title></head>
+<head><title>ABC Lab Log Entry</title>
+<script src="/js/env.js"></script>
+<script type="module" src="/js/auth.js"></script>
+</head>
 <body>
 <h1>📋 ABC Lab Log Entry</h1>
 <form id="logForm">
@@ -12,20 +15,29 @@
   <label>Notes</label><textarea name="notes"></textarea>
   <button type="submit">Submit</button>
 </form>
-<script>
-document.getElementById("logForm").addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const data = Object.fromEntries(new FormData(e.target));
-  const res = await fetch("/.netlify/functions/submit-log", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data)
+<script type="module">
+  import { auth0 } from "/js/auth.js";
+
+  document.getElementById("logForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    // Get token from Auth0
+    const token = await auth0.getTokenSilently();
+
+    const data = Object.fromEntries(new FormData(e.target));
+    const res = await fetch("/.netlify/functions/submit-log", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify(data)
+    });
+
+    const r = await res.json();
+    alert(res.ok ? "✅ Log saved!" : `❌ Error: ${r.message}`);
   });
-  const r = await res.json();
-  alert(res.ok ? "✅ Log saved!" : `❌ Error: ${r.message}`);
-});
 </script>
-<script src="https://cdn.auth0.com/js/auth0-spa-js/2.0/auth0-spa-js.production.js"></script>
-<script src="js/auth.js"></script>
+
 </body>
 </html>
