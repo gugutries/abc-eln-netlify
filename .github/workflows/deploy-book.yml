@@ -19,6 +19,10 @@ jobs:
             jupytext --to ipynb "$f" -o "converted/$(basename "$f" .md).ipynb"
           done
       - run: jupyter-book build .
+      - name: Inject Auth0 credentials into ELN auth.js
+        run: |
+          sed -i 's/%%AUTH0_CLIENT_ID%%/${{ secrets.AUTH0_CLIENT_ID }}/g' _build/html/_static/js/auth.js
+          sed -i 's/%%AUTH0_DOMAIN%%/${{ secrets.AUTH0_DOMAIN }}/g' _build/html/_static/js/auth.js
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
