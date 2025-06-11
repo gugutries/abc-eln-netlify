@@ -12,13 +12,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-
-      # Inject Auth0 credentials into frontend
-      - name: Inject Auth0 credentials into logform auth.js
-        run: |
-          sed -i 's/%%AUTH0_CLIENT_ID%%/${{ secrets.AUTH0_CLIENT_ID }}/g' logform/js/auth.js
-          sed -i 's/%%AUTH0_DOMAIN%%/${{ secrets.AUTH0_DOMAIN }}/g' logform/js/auth.js
-
       # Deploy to Netlify
       - uses: jsmrcaga/action-netlify-deploy@v2.2.0
         with:
