@@ -19,11 +19,6 @@ jobs:
             jupytext --to ipynb "$f" -o "converted/$(basename "$f" .md).ipynb"
           done
       - run: jupyter-book build .
-
-      - name: Inject login credentials
-        run: |
-          sed -i 's/%%USERNAME%%/${{ secrets.ELN_USER }}/g' _build/html/_static/login.js
-          sed -i 's/%%PASSWORD%%/${{ secrets.ELN_PASS }}/g' _build/html/_static/login.js
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
