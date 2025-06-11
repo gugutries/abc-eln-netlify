@@ -1,7 +1,7 @@
 // _static/js/auth.js
 
-const clientId = '%%AUTH0_CLIENT_ID%%';
-const domain = '%%AUTH0_DOMAIN%%';
+const clientId = '';
+const domain = '';
 
 window.onload = async () => {
   const isLoggedIn = localStorage.getItem("isLoggedIn");
